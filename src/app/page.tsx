@@ -57,7 +57,7 @@ export default function Home() {
         </h1>
         <p className="text-xl text-primary-100 max-w-2xl mx-auto leading-relaxed">
           Plan your investments to meet your future financial goals with data-driven
-          portfolio recommendations and Monte Carlo analysis.
+          portfolio recommendations.
         </p>
       </header>
 
