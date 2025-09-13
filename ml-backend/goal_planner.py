@@ -8,6 +8,12 @@ Can be run either:
 
 It downloads market data, computes risk/return metrics, optimises a portfolio,
 and runs a Monte Carlo to estimate probability of reaching the investment goal.
+
+⚠️ This version focuses on **immediate purchase planning**:
+    - All recommended stock allocations and share counts
+      are based **only on the starting capital** you invest today.
+    - Monthly contributions are still included in Monte Carlo growth projections,
+      but do not affect the buy-list calculation.
 """
 
 import argparse
@@ -56,7 +62,6 @@ def build_universe(include_sp500=True, include_ftse100=True, include_nasdaq100=T
     if include_sp500: tickers += get_sp500_tickers()
     if include_ftse100: tickers += get_ftse100_tickers()
     if include_nasdaq100: tickers += get_nasdaq100_tickers()
-    # deduplicate while preserving order
     seen, deduped = set(), []
     for t in tickers:
         if t not in seen:
@@ -153,6 +158,10 @@ def optimize_portfolio(mu: pd.Series, cov: pd.DataFrame, risk: str,
 def simulate_goal(weights: pd.Series, mu: pd.Series, cov: pd.DataFrame,
                   years: int, start_capital: float, monthly_contrib: float,
                   runs: int = 10000, seed: int | None = None):
+    """
+    Monte Carlo simulation of portfolio growth, still including
+    monthly contributions for final-value forecasts.
+    """
     rng = np.random.default_rng(seed)
     months = years * 12
     mu_port = float(weights @ mu.loc[weights.index])
@@ -179,17 +188,17 @@ def run_plan(goal: float, years: int, risk: str,
              tries: int = 15000,
              seed: int | None = None) -> dict:
     """
-    Core function to compute an investment plan.
-
-    Returns a JSON-serialisable dict with:
-      weights, expected_return, volatility,
-      prob_reach_goal, p5, p50, p95
+    Core function to compute an investment plan with enriched output
+    for immediate purchase allocations.
     """
+    # Ensure start_capital is a valid float
+    start_capital = float(start_capital or 0.0)
+
     tickers = build_universe()
     prices = download_prices(tickers, years=lookback_years)
     mu, vol, cov = compute_metrics(prices)
     valid = mu.dropna().index.intersection(prices.columns)
-    mu, cov = mu.loc[valid], cov.loc[valid, valid]
+    mu, cov, prices = mu.loc[valid], cov.loc[valid, valid], prices[valid]
 
     top = rank_candidates(mu, np.sqrt(np.diag(cov)), risk, max_candidates=max_candidates)
     mu_top, cov_top = mu.loc[top], cov.loc[top, top]
@@ -206,19 +215,52 @@ def run_plan(goal: float, years: int, risk: str,
     p5, p50, p95 = np.percentile(outcomes, [5, 50, 95])
     prob = float((outcomes >= goal).mean())
 
+    # Immediate purchase allocations (only start_capital)
+    enriched_weights = []
+    for t, w in weights.items():
+        try:
+            info = yf.Ticker(t).info
+            company_name = info.get("longName", t)
+        except Exception:
+            company_name = t
+
+        # Handle missing or empty price series gracefully
+        if prices[t].dropna().empty:
+            current_price = 0.0
+        else:
+            current_price = float(prices[t].iloc[-1])
+
+        # Compute allocation and shares safely
+        initial_allocation_gbp = float(w * start_capital) if start_capital > 0 else 0.0
+        shares_to_buy = (
+            float(initial_allocation_gbp / current_price)
+            if current_price > 0 and initial_allocation_gbp > 0
+            else 0.0
+        )
+
+        enriched_weights.append({
+            "ticker": t,
+            "company_name": company_name,
+            "weight": float(w),
+            "current_price": current_price,
+            "initial_allocation_gbp": initial_allocation_gbp,
+            "shares_to_buy": shares_to_buy
+        })
+
     return {
-        "weights": [{"ticker": t, "weight": float(w)} for t, w in weights.items()],
+        "weights": enriched_weights,
         "expected_return": float(mu_port),
         "volatility": float(vol_port),
         "prob_reach_goal": prob,
-        "p5": float(p5),
-        "p50": float(p50),
-        "p95": float(p95),
+        "expected_final_value": float(p50),
+        "low_estimate": float(p5),
+        "high_estimate": float(p95),
+        "initial_capital": start_capital
     }
 
 
 # ================================================================
-# Keep the CLI for manual runs
+# CLI entry point
 # ================================================================
 def main():
     p = argparse.ArgumentParser()
@@ -233,13 +275,15 @@ def main():
     result = run_plan(args.goal, args.years, args.risk,
                       args.start_capital, args.monthly_contrib)
 
-    # simple console printout
     print("\n=== Goal-based Investment Plan ===")
     print(f"Expected return : {result['expected_return']*100:5.2f}%")
     print(f"Volatility      : {result['volatility']*100:5.2f}%")
-    print(f"Prob reach goal : {result['prob_reach_goal']*100:5.1f}%\n")
+    print(f"Prob reach goal : {result['prob_reach_goal']*100:5.1f}%")
+    print(f"Median final value : £{result['expected_final_value']:,.0f}")
+    print("\nImmediate purchase allocations (from starting capital only):")
     for w in result["weights"]:
-        print(f"{w['ticker']:<10} {w['weight']*100:5.1f}%")
+        print(f"{w['ticker']:<8} {w['company_name']:<30} "
+              f"{w['weight']*100:5.1f}%  £{w['initial_allocation_gbp']:,.0f}  ~{w['shares_to_buy']:.1f} shares")
 
 if __name__ == "__main__":
     main()

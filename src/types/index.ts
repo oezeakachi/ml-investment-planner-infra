@@ -16,7 +16,11 @@ export interface FormErrors {
 
 export interface PortfolioWeight {
   ticker: string;
+  company_name: string;
   weight: number;
+  current_price: number;
+  initial_allocation_gbp: number;
+  shares_to_buy: number;
 }
 
 export interface PlanResult {
@@ -24,7 +28,8 @@ export interface PlanResult {
   expected_return: number;
   volatility: number;
   prob_reach_goal: number;
-  p5: number;
-  p50: number;
-  p95: number;
+  expected_final_value: number;
+  low_estimate: number;
+  high_estimate: number;
+  initial_capital: number;
 }

@@ -100,23 +100,43 @@ export default function Home() {
         {result && (
           <div className="mt-12 space-y-6">
             <ResultCard title="Recommended Portfolio">
-              {result.weights.map((w, i) =>
-                <div key={i} className="flex justify-between border-b py-2">
-                  <span>{w.ticker}</span><span>{(w.weight * 100).toFixed(1)}%</span>
-                </div>
-              )}
-            </ResultCard>
-            <ResultCard title="Portfolio Stats">
-              <div className="grid grid-cols-2 gap-4">
-                <StatItem label="Expected Return" value={formatPercentage(result.expected_return)} />
-                <StatItem label="Volatility" value={formatPercentage(result.volatility)} />
+              <div className="grid grid-cols-1 gap-4">
+                {result.weights.map((w, i) => (
+                  <div key={i} className="border-b pb-4">
+                    <div className="flex justify-between text-lg font-semibold">
+                      <span>{w.company_name} ({w.ticker})</span>
+                      <span>{(w.weight * 100).toFixed(1)}%</span>
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1 flex flex-wrap gap-4">
+                      <span>Current price: {formatCurrency(w.current_price)}</span>
+                      <span>Allocation: {formatCurrency(w.initial_allocation_gbp)}</span>
+                      <span>Approx. shares: {w.shares_to_buy.toFixed(1)}</span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </ResultCard>
-            <ResultCard title="Goal Probability">
-              <div className="grid grid-cols-3 gap-4">
-                <StatItem label="5th percentile" value={formatCurrency(result.p5)} />
-                <StatItem label="Median" value={formatCurrency(result.p50)} />
-                <StatItem label="95th percentile" value={formatCurrency(result.p95)} />
+              
+            <ResultCard title="Portfolio Statistics">
+              <div className="grid grid-cols-2 gap-4">
+                <StatItem label="Expected Annual Return" value={formatPercentage(result.expected_return)} />
+                <StatItem label="Annual Volatility" value={formatPercentage(result.volatility)} />
+              </div>
+            </ResultCard>
+              
+            <ResultCard title="Goal Projection">
+              <div className="space-y-4">
+                <div className="text-center text-xl font-bold text-primary-700">
+                  {formatCurrency(result.expected_final_value)} expected value after {form.yearsToInvest} years
+                </div>
+                <div className="grid grid-cols-3 gap-4">
+                  <StatItem label="Low (5th percentile)" value={formatCurrency(result.low_estimate)} />
+                  <StatItem label="Median (50th percentile)" value={formatCurrency(result.expected_final_value)} />
+                  <StatItem label="High (95th percentile)" value={formatCurrency(result.high_estimate)} />
+                </div>
+                <p className="text-center text-gray-600">
+                  Probability of reaching your goal: <strong>{formatPercentage(result.prob_reach_goal)}</strong>
+                </p>
               </div>
             </ResultCard>
           </div>
