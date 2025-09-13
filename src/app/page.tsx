@@ -27,16 +27,16 @@ export default function Home() {
     if (Object.keys(errs).length) return setErrors(errs)
     setLoading(true)
     try {
-      const res = await fetch('/api/plan', {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/plan`, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          target_goal: +form.targetGoal.replace(/[£,]/g, ''),
-          years_to_invest: +form.yearsToInvest,
-          monthly_contribution: +form.monthlyContribution.replace(/[£,]/g, ''),
-          starting_capital: +form.startingCapital.replace(/[£,]/g, ''),
-          risk_tolerance: form.riskTolerance
-        }),
-        headers: { 'Content-Type': 'application/json' }
+          goal: +form.targetGoal.replace(/[£,]/g, ''),
+          years: +form.yearsToInvest,
+          risk: form.riskTolerance,
+          start_capital: +form.startingCapital.replace(/[£,]/g, ''),
+          monthly_contrib: +form.monthlyContribution.replace(/[£,]/g, '')
+        })
       })
       setResult(await res.json())
     } finally {
