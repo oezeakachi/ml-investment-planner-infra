@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from goal_planner import run_plan  # you'll refactor goal_planner to expose run_plan()
+from .goal_planner import run_plan
 
 app = FastAPI()
 
