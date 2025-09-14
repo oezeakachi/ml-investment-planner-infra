@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from .goal_planner import run_plan
+from goal_planner import run_plan
 
 app = FastAPI()
 

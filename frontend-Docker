@@ -22,24 +22,15 @@ FROM node:24-alpine AS runner
 # Set working directory
 WORKDIR /app
 
-# Copy package file 
-COPY package.json package-lock.json* ./
-
 # Copy needed files from builder
-COPY --from=builder /app/package.json /app/package-lock.json* ./
-COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/.next/standalone ./
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.* ./
-COPY --from=builder /app/tailwind.config.* ./
-COPY --from=builder /app/postcss.config.* ./
-
-# Install production deps
-RUN npm ci --only=production
 
 # Expose port used by Next.js
 EXPOSE 3000
 
 # Start Next.js
-CMD ["npm", "start"]
+CMD ["node", "server.js"]
 
 
