@@ -4,6 +4,10 @@ FROM node:24-alpine AS builder
 # Set working directory
 WORKDIR /app
 
+# Build arg
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
 # Copy package file 
 COPY package.json package-lock.json* ./
 
@@ -26,6 +30,10 @@ WORKDIR /app
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/public ./public
+
+# Set environment
+ENV NODE_ENV=production
+ENV PORT=3000
 
 # Expose port used by Next.js
 EXPOSE 3000
