@@ -1,0 +1,72 @@
+name: Frontend CI/CD
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v5.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5.0.0
+        with: 
+          node-version: latest
+          cache: 'npm'
+
+      - name: Install Dependencies, Lint and Test Code
+        run: |
+          npm ci
+          npm run lint
+          npm test
+
+      - name: Build Docker Image 
+        id: build-image
+        uses: docker/build-push-action@v6.18.0
+        with:
+          context: .
+          file: Docker/frontend/frontend-Docker
+          platforms: linux/amd64
+          push: false
+          load: true
+          tags: ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner:latest
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: Trivy Vulnerability Scan
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ${{ steps.build-image.outputs.imageid }}
+          exit-code: '1'
+          severity: 'CRITICAL'
+
+      - name: Configure AWS creds
+        uses: aws-actions/configure-aws-credentials@v5.0.0
+        with:
+          aws-region: eu-west-2
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Push Image to ECR
+        if: success()
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner:latest
+        
+          
+
+          
+        
+        
+          
+      
+        
+
+      
