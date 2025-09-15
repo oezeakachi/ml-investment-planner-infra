@@ -29,7 +29,6 @@ WORKDIR /app
 # Copy needed files from builder
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
 
 # Set environment
 ENV NODE_ENV=production
@@ -40,5 +39,3 @@ EXPOSE 3000
 
 # Start Next.js
 CMD ["node", "server.js"]
-
-
