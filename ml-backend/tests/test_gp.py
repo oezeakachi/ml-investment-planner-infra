@@ -22,14 +22,13 @@ def test_compute_metrics_shapes_and_values():
         "C": [200, 198, 199, 201, 202, 204],
     }, index=dates)
 
-    mu, vol, cov, rets = gp.compute_metrics(prices)
+    mu, vol, cov = gp.compute_metrics(prices)
 
     assert isinstance(mu, pd.Series)
     assert isinstance(vol, np.ndarray)
     assert isinstance(cov, pd.DataFrame)
     assert mu.index.tolist() == ["A", "B", "C"]
     assert cov.shape == (3, 3)
-    assert rets.shape[1] == 3
     assert np.isfinite(mu).all()
     assert np.isfinite(vol).all()
     assert np.isfinite(cov.values).all()
