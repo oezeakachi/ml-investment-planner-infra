@@ -18,7 +18,7 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install --no-cache-dir -r ml-backend/requirements.txt
+        run: pip install -r ml-backend/requirements.txt
       
       - name: Test Code
         run: pytest ml-backend/tests
