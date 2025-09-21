@@ -9,4 +9,3 @@ variable "project_name" {
   type        = string
   default     = "ml-investment-planner"
 }
-
