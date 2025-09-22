@@ -61,7 +61,7 @@ jobs:
       - name: Terraform Plan
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
-        run: terraform plan -out=tfplan
+        run: terraform plan -out=tfplan -input=false
 
       - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
