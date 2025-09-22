@@ -60,10 +60,10 @@ jobs:
         run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:latest
 
       - name: Setup Helm
-      - uses: azure/setup-helm@v4.3.0
+        uses: azure/setup-helm@v4.3.0
         with: 
           version: 'latest'
-          
+
       - name: Deploy to EKS with Helm
         run: |
           aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
