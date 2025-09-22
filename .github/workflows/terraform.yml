@@ -7,6 +7,10 @@ on:
         description: "Choose action: apply or destroy"
         required: true
         default: "apply"
+      confirm:
+        description: "Type 'apply' again for apply or 'destroy' again for destroy to confirm"
+        required: true
+        default: "none"
 
 jobs:
   terraform:
@@ -21,6 +25,23 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.2
+
+      - name: Verify double confirmation
+        run: |
+          if [ "${{ github.event.inputs.action }}" = "apply" ]; then
+            if [ "${{ github.event.inputs.confirm }}" != "apply" ]; then
+              echo "Confirmation failed: you must type 'apply' to proceed."
+              exit 1
+            fi
+          elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
+            if [ "${{ github.event.inputs.confirm }}" != "destroy" ]; then
+              echo "Confirmation failed: you must type 'destroy' to proceed."
+              exit 1
+            fi
+          else
+            echo "Invalid action input. Must be 'apply' or 'destroy'."
+            exit 1
+          fi
 
       - name: Terraform Init
         working-directory: terraform
