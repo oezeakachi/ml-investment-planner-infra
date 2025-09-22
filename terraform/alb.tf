@@ -47,7 +47,7 @@ resource "aws_lb" "app" {
 
 # Target Group for FRONTEND (NodePort)
 resource "aws_lb_target_group" "tg_frontend" {
-  name        = "${var.project_name}-tg-frontend"
+  name        = "${var.project_name}-tg-fe"
   port        = var.frontend_node_port
   protocol    = "HTTP"
   target_type = "instance" # Send to EC2 nodes (NodePort)
@@ -67,13 +67,13 @@ resource "aws_lb_target_group" "tg_frontend" {
   }
 
   tags = {
-    Name = "${var.project_name}-tg-frontend"
+    Name = "${var.project_name}-tg-fe"
   }
 }
 
 # Target Group for BACKEND (NodePort)
 resource "aws_lb_target_group" "tg_backend" {
-  name        = "${var.project_name}-tg-backend"
+  name        = "${var.project_name}-tg-bd"
   port        = var.backend_node_port
   protocol    = "HTTP"
   target_type = "instance"
@@ -93,7 +93,7 @@ resource "aws_lb_target_group" "tg_backend" {
   }
 
   tags = {
-    Name = "${var.project_name}-tg-backend"
+    Name = "${var.project_name}-tg-bd"
   }
 }
 
