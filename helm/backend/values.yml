@@ -1,0 +1,12 @@
+replicaCount: 2
+
+image:
+  repository: ""
+  tag: "latest"
+
+service:
+  type: NodePort
+  port: 8000
+
+env:
+  CORS_ORIGIN: ""
