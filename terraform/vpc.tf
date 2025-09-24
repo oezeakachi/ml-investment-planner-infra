@@ -43,7 +43,7 @@ resource "aws_subnet" "pub-b" {
 resource "aws_subnet" "priv-a" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.3.0/24"
-  map_public_ip_on_launch = "true"
+  map_public_ip_on_launch = "false"
   availability_zone       = "${var.aws_region}a"
   tags = {
     Name = "${var.project_name}-private-a"
@@ -54,7 +54,7 @@ resource "aws_subnet" "priv-a" {
 resource "aws_subnet" "priv-b" {
   vpc_id                  = aws_vpc.main.id
   cidr_block              = "10.0.4.0/24"
-  map_public_ip_on_launch = "true"
+  map_public_ip_on_launch = "false"
   availability_zone       = "${var.aws_region}b"
   tags = {
     Name = "${var.project_name}-private-b"

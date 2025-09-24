@@ -13,7 +13,7 @@ variable "project_name" {
 variable "k8s_version" {
   description = "Desired Kubernetes version for the EKS cluster"
   type        = string
-  default     = "1.29"
+  default     = "1.33"
 }
 
 variable "node_instance_types" {
