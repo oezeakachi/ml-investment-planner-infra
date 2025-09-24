@@ -72,4 +72,4 @@ jobs:
           helm upgrade --install frontend ./helm/frontend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend \
             --set image.tag=latest \
-            --set env.NEXT_PUBLIC_API_URL=${{ secrets.ALB_DNS_NAME }}
+            --set env.NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}

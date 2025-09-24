@@ -70,4 +70,4 @@ jobs:
           helm upgrade --install backend ./helm/backend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend \
             --set image.tag=latest \
-            --set env.CORS_ORIGIN=${{ secrets.ALB_DNS_NAME }}
+            --set env.CORS_ORIGIN=${{ secrets.NEXT_PUBLIC_API_URL }}

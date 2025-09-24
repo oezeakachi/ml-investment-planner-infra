@@ -165,18 +165,3 @@ resource "aws_security_group_rule" "nodes_from_alb_backend" {
   security_group_id        = module.eks.node_security_group_id
   source_security_group_id = aws_security_group.alb_sg.id
 }
-
-# Outputs
-
-# output "alb_arn" {
-#   description = "ARN of the ALB"
-#   value       = aws_lb.app.arn
-# }
-
-# output "tg_frontend_arn" {
-#   value = aws_lb_target_group.tg_frontend.arn
-# }
-
-# output "tg_backend_arn" {
-#   value = aws_lb_target_group.tg_backend.arn
-# }
