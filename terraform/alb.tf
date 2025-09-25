@@ -130,14 +130,14 @@ resource "aws_lb_listener_rule" "api_path" {
 
 # Frontend TG attachment to node group's Auto Scaling Group(s)
 resource "aws_autoscaling_attachment" "asg_to_tg_frontend" {
-  for_each               = toset(try(module.eks.eks_managed_node_groups["default"].autoscaling_group_names, []))
+  for_each               = toset(module.eks.eks_managed_node_groups["default"].node_group_autoscaling_group_names)
   autoscaling_group_name = each.value
   lb_target_group_arn    = aws_lb_target_group.tg_frontend.arn
 }
 
 # Backend TG attachment to node group's Auto Scaling Group(s)
 resource "aws_autoscaling_attachment" "asg_to_tg_backend" {
-  for_each               = toset(try(module.eks.eks_managed_node_groups["default"].autoscaling_group_names, []))
+  for_each               = toset(module.eks.eks_managed_node_groups["default"].node_group_autoscaling_group_names)
   autoscaling_group_name = each.value
   lb_target_group_arn    = aws_lb_target_group.tg_backend.arn
 }
