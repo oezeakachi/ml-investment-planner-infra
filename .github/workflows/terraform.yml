@@ -1,4 +1,4 @@
-name: Terraform Infrastructure
+name: Terraform AWS Infrastructure
 
 on:
   workflow_dispatch:
@@ -58,12 +58,24 @@ jobs:
         working-directory: terraform
         run: terraform validate
 
-      - name: Terraform Plan
+      # Phase 1: provision EKS control plane + nodegroup only
+      - name: Terraform Plan (EKS only)
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform
+        run: terraform plan -target=module.eks -out=tfplan-eks -input=false
+
+      - name: Terraform Apply (EKS only)
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform
+        run: terraform apply -auto-approve tfplan-eks
+
+      # Phase 2: provision rest of stack
+      - name: Terraform Plan (Full stack)
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
         run: terraform plan -out=tfplan -input=false
 
-      - name: Terraform Apply
+      - name: Terraform Apply (Full stack)
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
         run: terraform apply -auto-approve tfplan
