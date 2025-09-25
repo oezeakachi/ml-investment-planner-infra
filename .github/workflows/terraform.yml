@@ -8,7 +8,7 @@ on:
         required: true
         default: "apply"
       confirm:
-        description: "Type 'apply' again for apply or 'destroy' again for destroy to confirm"
+        description: "Confirm your choice again"
         required: true
         default: "none"
 

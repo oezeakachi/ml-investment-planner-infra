@@ -79,3 +79,4 @@ jobs:
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend \
             --set image.tag=latest \
             --set env.NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            
