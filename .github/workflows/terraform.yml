@@ -58,24 +58,12 @@ jobs:
         working-directory: terraform
         run: terraform validate
 
-      # Phase 1: provision EKS control plane + nodegroup only
-      - name: Terraform Plan (EKS only)
-        if: github.event.inputs.action == 'apply'
-        working-directory: terraform
-        run: terraform plan -target=module.eks -out=tfplan-eks -input=false
-
-      - name: Terraform Apply (EKS only)
-        if: github.event.inputs.action == 'apply'
-        working-directory: terraform
-        run: terraform apply -auto-approve tfplan-eks
-
-      # Phase 2: provision rest of stack
-      - name: Terraform Plan (Full stack)
+      - name: Terraform Plan
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
         run: terraform plan -out=tfplan -input=false
 
-      - name: Terraform Apply (Full stack)
+      - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
         working-directory: terraform
         run: terraform apply -auto-approve tfplan
