@@ -6,7 +6,7 @@ from goal_planner import run_plan
 
 app = FastAPI()
 
-allowed_origin = os.getenv("FRONTEND_URL", "http://localhost:3000")
+allowed_origin = os.getenv("CORS_ORIGIN", "http://localhost:3000")
 
 app.add_middleware(
     CORSMiddleware,

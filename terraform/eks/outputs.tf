@@ -15,7 +15,7 @@ output "node_group_asg_names" {
 
 output "private_subnet_ids" {
   description = "List of private subnet IDs"
-  value       = [
+  value = [
     aws_subnet.priv-a.id,
     aws_subnet.priv-b.id
   ]
@@ -23,7 +23,7 @@ output "private_subnet_ids" {
 
 output "public_subnet_ids" {
   description = "List of public subnet IDs"
-  value       = [
+  value = [
     aws_subnet.pub-a.id,
     aws_subnet.pub-b.id
   ]
