@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import os
 from goal_planner import run_plan
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
 
 allowed_origin = os.getenv("CORS_ORIGIN", "http://localhost:3000")
 
