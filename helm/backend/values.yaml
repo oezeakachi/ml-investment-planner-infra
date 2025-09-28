@@ -8,6 +8,3 @@ service:
   type: NodePort
   port: 8000
   nodePort: 30081
-
-env:
-  CORS_ORIGIN: ""

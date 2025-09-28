@@ -8,6 +8,3 @@ service:
   type: NodePort
   port: 3000
   nodePort: 30080
-
-env:
-  NEXT_PUBLIC_API_URL: ""

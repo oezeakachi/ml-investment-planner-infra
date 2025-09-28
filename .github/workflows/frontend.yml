@@ -77,6 +77,5 @@ jobs:
           aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
           helm upgrade --install frontend ./helm/frontend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend \
-            --set image.tag=latest \
-            --set env.NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+            --set image.tag=latest
             

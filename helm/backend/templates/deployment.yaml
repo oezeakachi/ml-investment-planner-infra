@@ -17,6 +17,3 @@ spec:
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
         ports:
         - containerPort: 8000
-        env:
-        - name: CORS_ORIGIN
-          value: {{ .Values.env.CORS_ORIGIN | quote }}

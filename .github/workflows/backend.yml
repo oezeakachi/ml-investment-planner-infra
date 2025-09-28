@@ -75,5 +75,4 @@ jobs:
           aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
           helm upgrade --install backend ./helm/backend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend \
-            --set image.tag=latest \
-            --set env.CORS_ORIGIN=${{ secrets.NEXT_PUBLIC_API_URL }}
+            --set image.tag=latest
