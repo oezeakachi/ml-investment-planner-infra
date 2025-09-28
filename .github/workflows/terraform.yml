@@ -8,7 +8,7 @@ on:
         required: true
         default: "apply"
       confirm:
-        description: "Confirm your choice again"
+        description: "Type the same word again to confirm"
         required: true
         default: "none"
 
@@ -18,57 +18,97 @@ jobs:
     environment: production
 
     steps:
+      # Checkout code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure AWS creds
+      # Configure AWS credentials
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v5.0.0
         with:
           aws-region: eu-west-2
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      # Setup Terraform
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.2
 
+      # Confirm action
       - name: Verify double confirmation
         run: |
-          if [ "${{ github.event.inputs.action }}" = "apply" ]; then
-            if [ "${{ github.event.inputs.confirm }}" != "apply" ]; then
-              echo "Confirmation failed: you must type 'apply' to proceed."
-              exit 1
-            fi
-          elif [ "${{ github.event.inputs.action }}" = "destroy" ]; then
-            if [ "${{ github.event.inputs.confirm }}" != "destroy" ]; then
-              echo "Confirmation failed: you must type 'destroy' to proceed."
-              exit 1
-            fi
-          else
-            echo "Invalid action input. Must be 'apply' or 'destroy'."
+          ACTION=${{ github.event.inputs.action }}
+          CONFIRM=${{ github.event.inputs.confirm }}
+
+          if [ "$ACTION" = "apply" ] && [ "$CONFIRM" != "apply" ]; then
+            echo "Confirmation failed: type 'apply' to proceed."
+            exit 1
+          elif [ "$ACTION" = "destroy" ] && [ "$CONFIRM" != "destroy" ]; then
+            echo "Confirmation failed: type 'destroy' to proceed."
+            exit 1
+          elif [ "$ACTION" != "apply" ] && [ "$ACTION" != "destroy" ]; then
+            echo "Invalid action. Must be 'apply' or 'destroy'."
             exit 1
           fi
 
-      - name: Terraform Init
-        working-directory: terraform
+      # ---------------------------
+      # EKS stack (applied first)
+      # ---------------------------
+
+      - name: Init EKS
+        working-directory: terraform/eks
         run: terraform init
 
-      - name: Terraform Validate
-        working-directory: terraform
+      - name: Validate EKS
+        working-directory: terraform/eks
         run: terraform validate
 
-      - name: Terraform Plan
+      - name: Plan EKS
         if: github.event.inputs.action == 'apply'
-        working-directory: terraform
+        working-directory: terraform/eks
         run: terraform plan -out=tfplan -input=false
 
-      - name: Terraform Apply
+      - name: Apply EKS
         if: github.event.inputs.action == 'apply'
-        working-directory: terraform
+        working-directory: terraform/eks
         run: terraform apply -auto-approve tfplan
 
-      - name: Terraform Destroy
+      - name: Destroy EKS
         if: github.event.inputs.action == 'destroy'
-        working-directory: terraform
+        working-directory: terraform/eks
         run: terraform destroy -auto-approve
+
+      # ------------------------------------------
+      # ALB + ECR stack (depends on EKS outputs)
+      # ------------------------------------------
+
+      - name: Init ALB
+        working-directory: terraform/alb
+        run: terraform init
+
+      - name: Validate ALB
+        working-directory: terraform/alb
+        run: terraform validate
+
+      - name: Plan ALB
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform/alb
+        run: terraform plan -out=tfplan -input=false
+
+      - name: Apply ALB
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform/alb
+        run: terraform apply -auto-approve tfplan
+
+      - name: Destroy ALB
+        if: github.event.inputs.action == 'destroy'
+        working-directory: terraform/alb
+        run: terraform destroy -auto-approve
+
+      # Show ALB Output
+      - name: Show ALB DNS
+        if: github.event.inputs.action == 'apply'
+        working-directory: terraform/alb
+        run: terraform output

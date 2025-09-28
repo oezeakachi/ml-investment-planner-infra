@@ -51,7 +51,9 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:latest
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:latest
 
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@0.33.1
@@ -75,4 +77,4 @@ jobs:
           aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
           helm upgrade --install backend ./helm/backend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend \
-            --set image.tag=latest
+            --set image.tag=${{ github.sha }}
