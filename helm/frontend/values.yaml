@@ -3,6 +3,7 @@ replicaCount: 2
 image:
   repository: ""
   tag: "latest"
+  pullPolicy: Always
 
 service:
   type: NodePort
