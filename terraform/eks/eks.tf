@@ -36,7 +36,7 @@ module "eks" {
     vpc-cni                = { before_compute = true }
   }
 
-  # ✅ Managed node group using AL2023 + launch template + NodeConfig
+  # Managed node group 
   eks_managed_node_groups = {
     default = {
       desired_size = var.node_desired_size

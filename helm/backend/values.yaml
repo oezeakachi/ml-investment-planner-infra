@@ -9,3 +9,9 @@ service:
   type: NodePort
   port: 8000
   nodePort: 30081
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 50
