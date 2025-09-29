@@ -163,9 +163,6 @@ kubectl run loadgen --rm -it --image=busybox -- \
   --header='Content-Type: application/json' \
   --post-data='{\"goal\":1000,\"years\":1,\"risk\":\"aggressive\",\"start_capital\":10,\"monthly_contrib\":1}' \
   http://backend.default.svc.cluster.local:8000/api/plan; done"
-
-# Stop load
-kubectl delete pod loadgen
 ```
 
 Replace with a screenshot showing pods scaling up.  
