@@ -75,11 +75,6 @@ jobs:
         working-directory: terraform/eks
         run: terraform apply -auto-approve tfplan
 
-      - name: Destroy EKS
-        if: github.event.inputs.action == 'destroy'
-        working-directory: terraform/eks
-        run: terraform destroy -auto-approve
-
       # ------------------------------------------
       # ALB + ECR stack (depends on EKS outputs)
       # ------------------------------------------
@@ -112,3 +107,15 @@ jobs:
         if: github.event.inputs.action == 'apply'
         working-directory: terraform/alb
         run: terraform output
+
+      # Destroy ALB First
+      - name: Destroy ALB
+        if: github.event.inputs.action == 'destroy'
+        working-directory: terraform/alb
+        run: terraform destroy -auto-approve
+
+      # Destroy EKS and VPC Next
+      - name: Destroy EKS and VPC
+        if: github.event.inputs.action == 'destroy'
+        working-directory: terraform/eks
+        run: terraform destroy -auto-approve
