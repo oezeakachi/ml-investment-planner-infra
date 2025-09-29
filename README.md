@@ -197,11 +197,14 @@ If real production traffic is spiky, an dditional strategy could be integrated i
 Observability is built in:
 
 - **Amazon CloudWatch** – for EKS control-plane logs and metrics.  
-- `kubectl top` and **HPA events** – to monitor real time resource usage and scaling activity.  
+- `kubectl get hpa -w` – to monitor real time resource usage and scaling activity.  
+- `kubectl get pods -w` – to watch pod creation, termination, and scaling events in real time.  
 - `kubectl describe` – to troubleshoot and inspect pods, services, and events in detail.  
 
 
 ![HPA Scaling](images/hpa-scaling.png)
+
+##
 
 ![HPA Scaling](images/pod-watch.png)
 
