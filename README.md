@@ -73,7 +73,7 @@ Secrets such as AWS credentials and API URLs are stored securely in **GitHub Sec
 
 ---
 
-## 🚀 Getting Started / Reproduce the Setup
+## 🚀 Getting Started
 
 Follow these steps to recreate the full environment.
 
@@ -89,7 +89,7 @@ Follow these steps to recreate the full environment.
 
 ### Fork & Clone the Repo
 ```bash
-git clone https://github.com/<your-username>/ml-investment-planner-infra.git
+git clone https://github.com/Wasim-Ahmed0/ml-investment-planner-infra.git
 cd ml-investment-planner-infra
 ```
 
