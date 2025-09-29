@@ -14,6 +14,13 @@ The project is designed as a **production ready DevOps reference architecture**,
 
 ---
 
+## 🎥 Project Demo
+
+Watch the full project walkthrough here:  
+👉 [ML Investment Planner – Full Demo Video](https://vimeo.com/1122882023)
+
+---
+
 ## 📌 Key Highlights
 
 - **Full Infrastructure as Code** – Entire VPC, subnets, security groups, EKS cluster, ALB and ECR repositories provisioned by Terraform.
@@ -165,9 +172,6 @@ while true; do wget -q -O- http://backend.default.svc.cluster.local:8000/; done
 kubectl delete pod loadgen
 ```
 
-Replace with a screenshot showing pods scaling up.  
-![HPA Scaling](images/hpa-scaling.png)
-
 Once the artificial load stops, the pods automatically scale back down, saving costs.
 
 ## Handling Choppy Traffic
@@ -196,8 +200,10 @@ Observability is built in:
 - `kubectl top` and **HPA events** – to monitor real time resource usage and scaling activity.  
 - `kubectl describe` – to troubleshoot and inspect pods, services, and events in detail.  
 
-Replace with a screenshot of running pods and HPA activity.  
-![Kubernetes Pods](images/kubectl-get-pods.png)
+
+![HPA Scaling](images/hpa-scaling.png)
+
+![HPA Scaling](images/pod-watch.png)
 
 ---
 
