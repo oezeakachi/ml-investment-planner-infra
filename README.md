@@ -158,8 +158,11 @@ kubectl get hpa -w
 kubectl top pods
 
 # Simulate load on backend
-kubectl run loadgen --rm -it --image=busybox -- /bin/sh
-while true; do wget -q -O- http://backend.default.svc.cluster.local:8000/; done
+kubectl run loadgen --rm -it --image=busybox -- \
+  /bin/sh -c "while true; do wget -q -O- \
+  --header='Content-Type: application/json' \
+  --post-data='{\"goal\":1000,\"years\":1,\"risk\":\"aggressive\",\"start_capital\":10,\"monthly_contrib\":1}' \
+  http://backend.default.svc.cluster.local:8000/api/plan; done"
 
 # Stop load
 kubectl delete pod loadgen
@@ -168,7 +171,7 @@ kubectl delete pod loadgen
 Replace with a screenshot showing pods scaling up.  
 ![HPA Scaling](images/hpa-scaling.png)
 
-Once the artificial load stops, the pods automatically scale back down, saving costs.
+Once the artificial load stops, the pods automatically scale back down, saving resources and reducing costs.
 
 ## Handling Choppy Traffic
 
