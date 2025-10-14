@@ -10,7 +10,7 @@ on:
       confirm:
         description: "Type the same word again to confirm"
         required: true
-        default: "none"
+        default: "apply"
 
 jobs:
   terraform:
