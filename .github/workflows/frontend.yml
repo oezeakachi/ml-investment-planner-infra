@@ -74,8 +74,15 @@ jobs:
 
       - name: Deploy to EKS with Helm
         run: |
-          aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
+          aws eks update-kubeconfig --region eu-west-1 --name ml-investment-planner-eks
           helm upgrade --install frontend ./helm/frontend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend \
             --set image.tag=${{ github.sha }}
+          kubectl create namespace monitoring
+          helm install prometheus prometheus-community/kube-prometheus-stack \
+            --namespace monitoring \
+            --set grafana.adminPassword=admin
+          kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
+          kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+          
             
