@@ -6,7 +6,7 @@ data "terraform_remote_state" "eks" {
   config = {
     bucket = "ml-inv-planner-obi"
     key    = "eks/terraform.tfstate"
-    region = "eu-west-2"
+    region = "eu-west-1"
   }
 }
 
