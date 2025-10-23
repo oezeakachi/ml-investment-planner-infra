@@ -28,7 +28,7 @@ jobs:
       - name: Configure AWS creds
         uses: aws-actions/configure-aws-credentials@v5.0.0
         with:
-          aws-region: eu-west-2
+          aws-region: eu-west-1
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
@@ -72,7 +72,7 @@ jobs:
 
       - name: Deploy to EKS with Helm
         run: |
-          aws eks update-kubeconfig --region eu-west-2 --name ml-investment-planner-eks
+          aws eks update-kubeconfig --region eu-west-1 --name ml-investment-planner-eks
           helm upgrade --install backend ./helm/backend \
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend \
             --set image.tag=${{ github.sha }}
