@@ -1,8 +1,8 @@
 terraform {
   backend "s3" {
-    bucket       = "ml-inv-planner-one"
+    bucket       = "ml-inv-planner-obi"
     key          = "eks/terraform.tfstate"
-    region       = "eu-west-2"
+    region       = "eu-west-1"
     encrypt      = true
     use_lockfile = true
   }

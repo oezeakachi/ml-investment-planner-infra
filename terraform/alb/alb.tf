@@ -4,7 +4,7 @@
 data "terraform_remote_state" "eks" {
   backend = "s3"
   config = {
-    bucket = "ml-inv-planner-one"
+    bucket = "ml-inv-planner-obi"
     key    = "eks/terraform.tfstate"
     region = "eu-west-2"
   }
