@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "project_name" {
   description = "Prefix name for tagging and naming AWS resources"
   type        = string
-  default     = "ml-investment-planner-app"
+  default     = "ml-investment-planner-app-1"
 }
 
 variable "k8s_version" {
