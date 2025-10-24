@@ -1,9 +1,9 @@
 provider "aws" {
-  region = "eu-west-2"
+  region = "eu-west-1"
 }
 
 resource "aws_s3_bucket" "tf_state" {
-  bucket = "ml-inv-planner-one"
+  bucket = "ml-inv-planner-obi"
 
   tags = {
     Name = "ml-inv-planner-state"
