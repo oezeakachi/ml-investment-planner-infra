@@ -29,6 +29,10 @@ module "eks" {
   cloudwatch_log_group_retention_in_days = 30
   enabled_log_types                      = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
+  # Explicitly set IAM role naming to avoid prefix length issues
+  iam_role_use_name_prefix = false
+  iam_role_name           = "${var.project_name}-eks-cluster-role"
+
   addons = {
     coredns                = {}
     eks-pod-identity-agent = { before_compute = true }
@@ -52,6 +56,10 @@ module "eks" {
       labels = {
         role = "general"
       }
+
+      # Disable name prefix for node group IAM role too
+      iam_role_use_name_prefix = false
+      iam_role_name           = "${var.project_name}-eks-node-role"
 
       iam_role_additional_policies = {
         AmazonEKSWorkerNodePolicy          = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
