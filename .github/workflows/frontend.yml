@@ -85,7 +85,7 @@ jobs:
             --namespace monitoring \
             --create-namespace \
             --set grafana.adminPassword=admin
+          kubectl rollout status deployment/prometheus-grafana -n monitoring --timeout=300s
           kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
-          kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
           
             
