@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 resource "aws_s3_bucket" "tf_state" {
-  bucket = "ml-inv-planner-obi"
+  bucket = "ml-inv-planner-obi2"
 
   tags = {
     Name = "ml-inv-planner-state"
