@@ -51,7 +51,7 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:${{ github.sha }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/backend:${{ github.sha }}
 
       - name: Trivy Vulnerability Scan
         uses: aquasecurity/trivy-action@0.33.1
@@ -63,7 +63,7 @@ jobs:
 
       - name: Push Image to ECR
         if: success()
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend:${{ github.sha }}
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/backend:${{ github.sha }}
 
       - name: Setup Helm
         uses: azure/setup-helm@v4.3.0
