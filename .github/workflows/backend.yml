@@ -72,7 +72,7 @@ jobs:
 
       - name: Deploy to EKS with Helm
         run: |
-          aws eks update-kubeconfig --region eu-west-1 --name ml-investment-planner-eks
+          aws eks update-kubeconfig --region eu-west-1 --name ml-inv-planner
           helm upgrade --install backend ./helm/backend \
-            --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/backend \
+            --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/backend \
             --set image.tag=${{ github.sha }}

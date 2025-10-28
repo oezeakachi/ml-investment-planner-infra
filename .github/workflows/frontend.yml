@@ -51,7 +51,7 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend:${{ github.sha }}
+          tags: ${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/frontend:${{ github.sha }}
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}/api
 
@@ -65,7 +65,7 @@ jobs:
 
       - name: Push Image to ECR
         if: success()
-        run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend:${{ github.sha }}
+        run: docker push ${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/frontend:${{ github.sha }}
 
       - name: Setup Helm
         uses: azure/setup-helm@v4.3.0
@@ -74,9 +74,9 @@ jobs:
 
       - name: Deploy to EKS with Helm
         run: |
-          aws eks update-kubeconfig --region eu-west-1 --name ml-investment-planner-eks
+          aws eks update-kubeconfig --region eu-west-1 --name ml-inv-planner-eks
           helm upgrade --install frontend ./helm/frontend \
-            --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-investment-planner/frontend \
+            --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/frontend \
             --set image.tag=${{ github.sha }}
           kubectl create namespace monitoring
           helm install prometheus prometheus-community/kube-prometheus-stack \
