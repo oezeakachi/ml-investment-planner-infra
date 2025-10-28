@@ -79,8 +79,11 @@ jobs:
             --set image.repository=${{ steps.login-ecr.outputs.registry }}/ml-inv-planner/frontend \
             --set image.tag=${{ github.sha }}
           kubectl create namespace monitoring
-          helm install prometheus prometheus-community/kube-prometheus-stack \
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo update
+          helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
             --namespace monitoring \
+            --create-namespace \
             --set grafana.adminPassword=admin
           kubectl port-forward -n monitoring svc/prometheus-grafana 3000:80
           kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
